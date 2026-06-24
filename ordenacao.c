@@ -42,6 +42,17 @@ void insertionSortEnergia(struct Carta mao[], int n) {
     // Salve a carta atual em uma variável chave.
     // Desloque as cartas anteriores que tiverem energia MAIOR que a chave para a direita.
     // Insira a chave na posição correta.
+    for (int i = 0; i < n; i++){
+        // Pega a carta atual para inserir no deck
+        struct Carta chave = mao[i];
+        int j = i - 1;
+
+        while (j >= 0 && mao[j].energia > chave.energia){
+            mao[j + 1] = mao[j];
+            j = j - 1;
+        }
+        mao[j + 1] = chave;
+    }
 }
 
 // NÍVEL AVENTUREIRO: Shell Sort (Ordenação por Ataque - Decrescente)
@@ -88,7 +99,7 @@ int main() {
     // ---------------------------------------------------------
     // NÍVEL NOVATO
     // ---------------------------------------------------------
-    /*
+    
     struct Carta mao_inicial[7] = {
         {105, "Ogro Esmagador", 5, 4, 5, 2}, 
         {102, "Elfa Arqueira", 2, 1, 2, 1}, 
@@ -103,11 +114,12 @@ int main() {
     imprimirCartas(mao_inicial, 7);
 
     // Chame a funcao insertionSortEnergia() aqui
+    insertionSortEnergia(mao_inicial, 7);
     
     printf("--- Nivel Novato: Mao Organizada (Por Energia) ---\n");
     imprimirCartas(mao_inicial, 7);
     printf("Mao organizada! Pronto para a batalha!\n\n");
-    */
+    
 
     // ---------------------------------------------------------
     // NÍVEL AVENTUREIRO
