@@ -18,6 +18,13 @@ struct Carta {
     int raridade;
 };
 
+// Funçao auxiliar para trocar cartas no particiona do quick sort
+void trocar(struct Carta *a, struct Carta *b){
+    struct Carta temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
 // Função auxiliar para exibir uma lista de cartas
 void imprimirCartas(struct Carta lista[], int tamanho) {
     printf("%-5s | %-25s | %-7s | %-7s | %-8s | %-8s\n", 
@@ -86,14 +93,31 @@ int compararCartas(const struct Carta* c1, const struct Carta* c2) {
     // Dica: Compare primeiro c1->raridade e c2->raridade.
     // Se forem diferentes, retorne quem deve vir primeiro.
     // Se forem iguais (empate), use strcmp(c1->nome, c2->nome).
-    return 0; // Altere este retorno!
+    if (c1->raridade > c2->raridade){
+        return -1;
+    }
+    if (c1->raridade < c2->raridade){
+        return 1;
+    }
+    return strcmp(c1->nome, c2->nome); // Altere este retorno!
 }
 
 // Função de particionamento (Quick Sort)
 int particionar(struct Carta registro[], int baixo, int alto) {
     // Dica: Escolha um pivô. Use a função compararCartas() dentro do laço 
     // para decidir se o elemento atual deve ir para a esquerda do pivô.
-    return 0; // Retorne o novo índice do pivô
+    struct Carta pivo = registro[alto];
+    int i = (baixo - 1);
+
+    for (int j = baixo; j <= alto - 1; j++){
+        if (compararCartas(&registro[j], &pivo) < 0){
+            i++;
+            trocar(&registro[i], &registro[j]);
+        }
+    }
+    // Coloca pivo em sua posição final correta
+    trocar(&registro[i + 1], &registro[alto]);
+    return (i + 1); // Retorne o novo índice do pivô
 }
 
 // Função principal do Quick Sort
@@ -101,6 +125,14 @@ void quickSortRegistro(struct Carta registro[], int baixo, int alto) {
     // Dica: Verifique se baixo < alto (Caso base da recursão).
     // Chame particionar(), depois chame quickSortRegistro() recursivamente 
     // para a metade esquerda e direita.
+    if (baixo < alto){
+        // u é o índice do pivo, que já está na posição correta
+        int u = particionar(registro, baixo, alto);
+
+        // Ordena recursivamente o sub-registros à esquerda e à direita do pivo
+        quickSortRegistro(registro, baixo, u - 1);
+        quickSortRegistro(registro, u + 1, alto);
+    }
 }
 
 
@@ -143,6 +175,7 @@ int main() {
     // Você pode usar os dados base fornecidos no nível Mestre ou criar os seus,
     // garantindo que tenha 40 elementos para provar a eficiência do Shell Sort.
 
+    /*
     struct Carta deck_torneio[40] = {
     {105, "Ogro Esmagador", 5, 4, 5, 2},
     {102, "Elfa Arqueira", 2, 1, 2, 1},
@@ -194,12 +227,12 @@ int main() {
     printf("--- Nivel Aventureiro: Deck Otimizado (Por Ataque Decrescente) ---\n");
     imprimirCartas(deck_torneio, 40);
     printf("Deck otimizado e pronto para o torneio!\n\n");
-    
+    */
 
     // ---------------------------------------------------------
     // NÍVEL MESTRE
     // ---------------------------------------------------------
-    /*
+    
     struct Carta grande_registro[20] = {
         {225, "Elemental de Fogo", 6, 2, 5, 2},
         {105, "Ogro Esmagador", 5, 4, 5, 2},
@@ -222,16 +255,17 @@ int main() {
         {110, "Clerigo Iluminado", 1, 3, 2, 1},
         {405, "Fenix Imortal", 9, 9, 9, 4}
     };
+    int n = 20;
 
     printf("--- Nivel Mestre: Grande Registro (Caos Primordial) ---\n");
     imprimirCartas(grande_registro, 20);
 
-    // Chame a funcao quickSortRegistro(grande_registro, 0, 19) aqui
+    quickSortRegistro(grande_registro, 0, n - 1);
 
     printf("--- Nivel Mestre: Grande Registro Restaurado (Raridade -> Nome) ---\n");
     imprimirCartas(grande_registro, 20);
     printf("O grande registro da arena foi restaurado!\n\n");
-    */
+    
 
     return 0;
 }
